@@ -37,4 +37,6 @@
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="available">Available</string>
+    <string name="welcome">Welcome to Demo App</string>
+    <string name="copyright">COPYRIGHT © 2020</string>
 </resources>
