@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="theme_heading_display">#5E5873</color>
+    <color name="theme_body">#6E6B7B</color>
+    <color name="theme_primary">#7367F0</color>
+    <color name="text_error">#EA5455</color>
+    <color name="edit_text_hint">#B9B9C3</color>
+    <color name="weak_password">#EA5455</color>
+    <color name="fair_password">#E3A063</color>
+    <color name="good_password">#647FFF</color>
+    <color name="strong_password">#59BC87</color>
+</resources>
