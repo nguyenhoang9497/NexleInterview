@@ -13,7 +13,6 @@ import com.example.nexleinterview.ui.login.login.LoginFragment
 import com.example.nexleinterview.ui.login.signup.SignUpFragment
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     companion object {
