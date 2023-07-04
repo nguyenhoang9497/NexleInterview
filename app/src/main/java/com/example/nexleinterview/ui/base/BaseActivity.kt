@@ -7,8 +7,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.example.nexleinterview.R
+import kotlinx.coroutines.launch
 
 abstract class BaseActivity<T : ViewBinding>(val inflate: (LayoutInflater) -> T) :
     AppCompatActivity() {
@@ -19,11 +23,15 @@ abstract class BaseActivity<T : ViewBinding>(val inflate: (LayoutInflater) -> T)
         binding = inflate(layoutInflater)
         setContentView(binding.root)
 
-        initData()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                initState()
+            }
+        }
         initListener()
     }
 
-    abstract fun initData()
+    abstract suspend fun initState()
 
     abstract fun initListener()
 

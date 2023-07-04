@@ -9,6 +9,7 @@ import com.example.nexleinterview.databinding.FragmentSignupBinding
 import com.example.nexleinterview.ui.base.BaseFragment
 import com.example.nexleinterview.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SignUpFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding::inflate) {
@@ -17,10 +18,23 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding
         fun newInstance() = SignUpFragment()
     }
 
-    private val viewModel: SignUpVMContract by viewModels()
+    private val viewModel: SignUpViewModel by viewModels()
 
-    override fun initData() {
-
+    override suspend fun initState() {
+        viewModel.stateFlow.collect {
+            when (it) {
+                SignUpViewModel.SignUpState.OK -> {}
+                is SignUpViewModel.SignUpState.PasswordStrengthError -> {
+                    binding.tvRequirePassword.text = requireContext().getString(it.strength.stringResource)
+                    binding.tvRequirePassword.setTextColor(
+                        resources.getColor(
+                            it.strength.colorResource,
+                            (activity as? LoginActivity)?.theme
+                        )
+                    )
+                }
+            }
+        }
     }
 
     override fun initListener() {
@@ -48,6 +62,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding
                     tvRequireEmail,
                     viewModel.isValidEmail(text.toString())
                 )
+                viewModel.event()
             }
 
             edtFirstName.doOnTextChanged { text, _, _, _ ->
@@ -93,42 +108,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding
                             requireContext().getString(R.string.signup_not_valid_password)
                     }
                 } else {
-                    tvRequirePassword.text =
-                        requireContext().getString(viewModel.passwordStrength(text.toString()))
-                    when (viewModel.passwordStrength(text.toString())) {
-                        SignUpViewModel.PasswordStrength.WEAK.value -> {
-                            tvRequirePassword.setTextColor(
-                                resources.getColor(
-                                    R.color.weak_password,
-                                    (activity as? LoginActivity)?.theme
-                                )
-                            )
-                        }
-                        SignUpViewModel.PasswordStrength.FAIR.value -> {
-                            tvRequirePassword.setTextColor(
-                                resources.getColor(
-                                    R.color.fair_password,
-                                    (activity as? LoginActivity)?.theme
-                                )
-                            )
-                        }
-                        SignUpViewModel.PasswordStrength.GOOD.value -> {
-                            tvRequirePassword.setTextColor(
-                                resources.getColor(
-                                    R.color.good_password,
-                                    (activity as? LoginActivity)?.theme
-                                )
-                            )
-                        }
-                        SignUpViewModel.PasswordStrength.STRONG.value -> {
-                            tvRequirePassword.setTextColor(
-                                resources.getColor(
-                                    R.color.strong_password,
-                                    (activity as? LoginActivity)?.theme
-                                )
-                            )
-                        }
-                    }
+                    viewModel.passwordStrength(text.toString())
                 }
             }
         }

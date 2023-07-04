@@ -8,11 +8,20 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import com.example.nexleinterview.ui.dialog.CustomProgressDialog
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment<T : ViewBinding>(private val inflate: (layoutInflater: LayoutInflater, ViewGroup?, Boolean) -> T) :
     Fragment() {
     protected lateinit var binding: T
+
+    private val progressDialog by lazy {
+        CustomProgressDialog.newInstance()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,12 +34,15 @@ abstract class BaseFragment<T : ViewBinding>(private val inflate: (layoutInflate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initData()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                initState()
+            }
+        }
         initListener()
     }
 
-    abstract fun initData()
+    abstract suspend fun initState()
 
     abstract fun initListener()
 
@@ -52,6 +64,17 @@ abstract class BaseFragment<T : ViewBinding>(private val inflate: (layoutInflate
             } else {
                 errorTextView.visibility = View.INVISIBLE
             }
+        }
+    }
+
+    internal fun handleProgressDialogStatus(isShow: Boolean) {
+        if (isShow) {
+            progressDialog.show(
+                childFragmentManager,
+                CustomProgressDialog::class.java.simpleName
+            )
+        } else {
+            progressDialog.dismissAllowingStateLoss()
         }
     }
 }

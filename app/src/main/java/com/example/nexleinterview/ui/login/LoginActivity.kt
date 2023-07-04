@@ -1,18 +1,10 @@
 package com.example.nexleinterview.ui.login
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
 import com.example.nexleinterview.R
 import com.example.nexleinterview.databinding.ActivityLoginBinding
-import com.example.nexleinterview.databinding.ActivityMainBinding
 import com.example.nexleinterview.ui.base.BaseActivity
 import com.example.nexleinterview.ui.login.login.LoginFragment
 import com.example.nexleinterview.ui.login.signup.SignUpFragment
@@ -28,11 +20,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        openLoginFragment()
     }
 
-    override fun initData() {
-        openLoginFragment()
+    override suspend fun initState() {
+
     }
 
     override fun initListener() {

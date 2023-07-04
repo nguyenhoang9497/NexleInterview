@@ -129,4 +129,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideViewModelShareFlow(): ShareFlow {
+        return ShareFlow()
+    }
 }

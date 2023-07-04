@@ -11,5 +11,7 @@ interface SignUpVMContract {
 
     fun isValidPassword(password: String): Boolean
 
-    fun passwordStrength(password: String): Int
+    fun passwordStrength(password: String)
+
+    fun event()
 }

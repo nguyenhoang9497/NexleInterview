@@ -1,20 +1,25 @@
 package com.example.nexleinterview.ui.login.login
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.loadingFlow
 import com.example.nexleinterview.R
 import com.example.nexleinterview.data.model.request.LoginRequest
 import com.example.nexleinterview.databinding.FragmentLoginBinding
+import com.example.nexleinterview.extension.collectFlow
 import com.example.nexleinterview.extension.onError
 import com.example.nexleinterview.extension.onSuccess
 import com.example.nexleinterview.ui.MainActivity
 import com.example.nexleinterview.ui.base.BaseFragment
 import com.example.nexleinterview.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 
 @AndroidEntryPoint
@@ -25,9 +30,28 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         fun newInstance() = LoginFragment()
     }
 
-    override fun initData() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        collectFlow(viewModel.loadingFlow) {
+            handleProgressDialogStatus(it)
+        }
+        viewModel.event()
     }
+
+    override suspend fun initState() {
+        viewModel.stateFlow.collect {
+            when(it) {
+                LoginViewModel.LoginState.OK -> {
+
+                }
+                is LoginViewModel.LoginState.CollectShareFlow -> {
+                    binding.edtEmail.setText(it.value.toString())
+                }
+            }
+        }
+    }
+
 
     override fun initListener() {
         binding.run {

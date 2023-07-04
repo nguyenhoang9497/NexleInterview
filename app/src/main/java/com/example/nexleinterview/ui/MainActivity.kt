@@ -10,10 +10,11 @@ import com.example.nexleinterview.R
 import com.example.nexleinterview.databinding.ActivityMainBinding
 import com.example.nexleinterview.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    private val viewModel: MainVMContract by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     private val adapter: MainAdapter by lazy {
         MainAdapter()
@@ -24,10 +25,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     }
 
-    override fun initData() {
-        adapter.setData(
-            mutableListOf("Text 1 ", "Text 1 ", "Text 1 ", "Text 1 ", "Text 1 ", "Text 1 ")
-        )
+    override suspend fun initState() {
+        viewModel.stateFLow.collect{
+            when(it) {
+                MainViewModel.MainState.OK -> {
+                    adapter.setData(mutableListOf("Text 1", "Text 1", "Text 1", "Text 1", "Text 1", "Text 1", "Text 1", ))
+                }
+            }
+        }
     }
 
     override fun initListener() {

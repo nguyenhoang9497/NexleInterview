@@ -12,4 +12,6 @@ interface LoginVMContract {
     fun isValidPassword(password: String): Boolean
 
     fun login(loginRequest: LoginRequest): Flow<FlowResult<LoginResponse>>
+
+    fun event()
 }
