@@ -1,49 +1,29 @@
 package com.example.nexleinterview.ui.login.signup
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.nexleinterview.R
-import com.example.nexleinterview.data.model.request.SignupRequest
 import com.example.nexleinterview.databinding.FragmentSignupBinding
-import com.example.nexleinterview.extension.onError
-import com.example.nexleinterview.extension.onSuccess
 import com.example.nexleinterview.ui.base.BaseFragment
 import com.example.nexleinterview.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
 
 @AndroidEntryPoint
-class SignUpFragment : BaseFragment() {
-    private lateinit var binding: FragmentSignupBinding
+class SignUpFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding::inflate) {
 
     companion object {
         fun newInstance() = SignUpFragment()
     }
 
-    private val viewModel: SignUpViewModel by viewModels()
+    private val viewModel: SignUpVMContract by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSignupBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun initData() {
+
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initListener()
-    }
-
-    private fun initListener() {
+    override fun initListener() {
         binding.run {
             btnSignup.setOnClickListener {
                 tvRequireEmail.isInvisible = viewModel.isValidEmail(edtEmail.text.toString())
@@ -53,32 +33,11 @@ class SignUpFragment : BaseFragment() {
                     viewModel.isValidLastName(edtLastName.text.toString())
                 tvRequirePassword.isInvisible =
                     viewModel.isValidPassword(edtPassword.text.toString())
-                if (viewModel.isValidEmail(edtEmail.text.toString())
-                    && viewModel.isValidFirstName(edtFirstName.text.toString())
-                    && viewModel.isValidLastName(edtLastName.text.toString())
-                    && viewModel.isValidPassword(edtPassword.text.toString())
-                    && chkPolicy.isChecked
-                ) {
-                    val signupRequest = SignupRequest(
-                        firstName = edtFirstName.text.toString(),
-                        lastName = edtLastName.text.toString(),
-                        email = edtEmail.text.toString(),
-                        password = edtPassword.text.toString()
-                    )
-                    viewModel.signup(signupRequest)
-                        .onSuccess { response ->
-                            Log.d("AAAA", "onSuccess:")
-                            Log.d("AAAA", "onSuccess: $response")
-                            (activity as? LoginActivity)?.finish()
-                        }
-                        .onError {
-                            Log.d("AAAA", "onError: ${it.message}")
-                        }.launchIn(lifecycleScope)
-                }
+                (activity as? LoginActivity)?.popFragment()
             }
 
             tvAlreadyHaveAccount.setOnClickListener {
-                (activity as? LoginActivity)?.onBackPressed()
+                (activity as? LoginActivity)?.popFragment()
             }
 
             edtEmail.doOnTextChanged { text, _, _, _ ->

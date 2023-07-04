@@ -4,27 +4,28 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.lifecycleScope
 import com.example.nexleinterview.R
 import com.example.nexleinterview.databinding.ActivityMainBinding
-import com.example.nexleinterview.extension.onSuccess
+import com.example.nexleinterview.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels()
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+    private val viewModel: MainVMContract by viewModels()
+
     private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         initHamburger()
+    }
+
+    override fun initData() {
+    }
+
+    override fun initListener() {
     }
 
     private fun initHamburger() {
@@ -37,10 +38,6 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> {
-                    viewModel.logout()
-                        .onSuccess {
-
-                        }.launchIn(lifecycleScope)
                     true
                 }
                 else -> {

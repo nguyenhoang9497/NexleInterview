@@ -2,6 +2,8 @@ package com.example.nexleinterview.ui.login
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,12 +11,16 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.nexleinterview.R
+import com.example.nexleinterview.databinding.ActivityLoginBinding
+import com.example.nexleinterview.databinding.ActivityMainBinding
+import com.example.nexleinterview.ui.base.BaseActivity
 import com.example.nexleinterview.ui.login.login.LoginFragment
 import com.example.nexleinterview.ui.login.signup.SignUpFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::inflate) {
+
     companion object {
         const val PASSWORD_PATTERN =
             "^(?=.*[!@#\$&*])(?=.*[0-9])(?=.*[a-z]).{6,18}\$"
@@ -22,31 +28,23 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+
+    }
+
+    override fun initData() {
         openLoginFragment()
     }
 
+    override fun initListener() {
+
+    }
+
     private fun openLoginFragment() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.loginContainer, LoginFragment.newInstance())
-        }
+        replaceFragment(LoginFragment.newInstance(), R.id.loginContainer)
     }
 
     internal fun openSignupFragment() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            add(R.id.loginContainer, SignUpFragment.newInstance())
-                .addToBackStack(SignUpFragment::class.java.name)
-        }
-    }
-
-    private fun hideKeyboard(view: View) {
-        view.clearFocus()
-        (view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(
-            view.windowToken,
-            0
-        )
+        addFragment(SignUpFragment.newInstance(), R.id.loginContainer)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

@@ -1,17 +1,39 @@
 package com.example.nexleinterview.ui.base
 
-import android.app.Activity
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.viewbinding.ViewBinding
 
-@AndroidEntryPoint
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<T : ViewBinding>(private val inflate: (layoutInflater: LayoutInflater, ViewGroup?, Boolean) -> T) :
+    Fragment() {
+    protected lateinit var binding: T
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = inflate.invoke(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initData()
+        initListener()
+    }
+
+    abstract fun initData()
+
+    abstract fun initListener()
+
     internal fun handleEditText(
         editText: EditText,
         notValid: Int,
@@ -32,5 +54,4 @@ abstract class BaseFragment : Fragment() {
             }
         }
     }
-
 }

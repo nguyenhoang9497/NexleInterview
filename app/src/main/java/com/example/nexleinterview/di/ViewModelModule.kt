@@ -1,8 +1,8 @@
 package com.example.nexleinterview.di
 
-import com.example.nexleinterview.data.network.auth.AuthDataSource
-import com.example.nexleinterview.data.network.auth.AuthRemoteDataSource
-import com.example.nexleinterview.data.network.auth.AuthRepository
+import com.example.nexleinterview.data.network.ApiService
+import com.example.nexleinterview.data.network.auth.DataSource
+import com.example.nexleinterview.data.network.auth.RemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 object ViewModelModule {
     @Provides
     @Singleton
-    fun providerAuthRepository(authRemoteDataSource: AuthRemoteDataSource): AuthDataSource{
-        return AuthRepository(authRemoteDataSource)
+    fun providerRemoteDataSource(apiService: ApiService): DataSource {
+        return RemoteDataSource(apiService)
     }
 }

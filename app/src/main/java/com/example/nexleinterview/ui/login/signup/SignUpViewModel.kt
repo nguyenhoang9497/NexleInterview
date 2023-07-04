@@ -1,28 +1,17 @@
 package com.example.nexleinterview.ui.login.signup
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import com.example.nexleinterview.R
-import com.example.nexleinterview.data.model.request.SignupRequest
-import com.example.nexleinterview.data.model.response.MoviePopularResponse
-import com.example.nexleinterview.data.model.response.SignupResponse
-import com.example.nexleinterview.data.network.auth.AuthRepository
-import com.example.nexleinterview.extension.FlowResult
-import com.example.nexleinterview.extension.onSuccess
+import com.example.nexleinterview.data.network.auth.Repository
 import com.example.nexleinterview.ui.login.LoginActivity.Companion.PASSWORD_PATTERN
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel(),
+class SignUpViewModel @Inject constructor(private val repository: Repository) : ViewModel(),
     SignUpVMContract {
-
-
-    override fun signup(signupRequest: SignupRequest): Flow<FlowResult<SignupResponse>> =
-        authRepository.signup(signupRequest)
 
     override fun isValidFirstName(name: String) =
         name.length >= 2
