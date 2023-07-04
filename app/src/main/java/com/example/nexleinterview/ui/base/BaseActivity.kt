@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.example.nexleinterview.R
 
-abstract class BaseActivity<T : ViewBinding>(val inflate: (LayoutInflater) -> T) : AppCompatActivity() {
+abstract class BaseActivity<T : ViewBinding>(val inflate: (LayoutInflater) -> T) :
+    AppCompatActivity() {
     protected lateinit var binding: T
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,25 +30,35 @@ abstract class BaseActivity<T : ViewBinding>(val inflate: (LayoutInflater) -> T)
     fun addFragment(fragment: Fragment, fragmentContainer: Int, isAddToBackStack: Boolean = true) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_out_right)
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_in_right,
+                R.anim.slide_out_right,
+                R.anim.slide_out_right
+            )
             .add(fragmentContainer, fragment)
         if (isAddToBackStack) {
             transaction.addToBackStack(fragment::class.java.name)
-        } else {
-            transaction.addToBackStack(null)
         }
         transaction.commit()
     }
 
-    fun replaceFragment(fragment: Fragment, fragmentContainer: Int, isAddToBackStack: Boolean = true) {
+    fun replaceFragment(
+        fragment: Fragment,
+        fragmentContainer: Int,
+        isAddToBackStack: Boolean = false
+    ) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_out_right)
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_in_right,
+                R.anim.slide_out_right,
+                R.anim.slide_out_right
+            )
             .replace(fragmentContainer, fragment)
         if (isAddToBackStack) {
             transaction.addToBackStack(fragment::class.java.name)
-        } else {
-            transaction.addToBackStack(null)
         }
         transaction.commit()
     }
